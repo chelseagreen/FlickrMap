@@ -17,9 +17,77 @@
                     <view key="view" contentMode="scaleToFill" id="rDP-Uw-djt">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="136-c0-Hdi">
+                                <rect key="frame" x="0.0" y="178" width="600" height="422"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="7mx-5S-E0j">
+                                    <size key="itemSize" width="155" height="143"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="rAo-KD-kXX" customClass="CollectionViewCell" customModule="TheVirtualTourist" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="155" height="143"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="155" height="143"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KkC-QB-Kph">
+                                                    <rect key="frame" x="8" y="-9" width="138" height="138"/>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <connections>
+                                            <outlet property="imageView" destination="KkC-QB-Kph" id="YbI-yn-LRy"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UfJ-4J-7xK">
+                                <rect key="frame" x="229" y="543" width="217" height="37"/>
+                                <state key="normal" title="New Collection"/>
+                                <connections>
+                                    <action selector="newCollectionPressed:" destination="LmZ-KJ-ajI" eventType="touchUpInside" id="jkN-i9-UMH"/>
+                                </connections>
+                            </button>
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Yog-vI-RW0">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                <items>
+                                    <navigationItem id="8bs-II-LIf">
+                                        <barButtonItem key="leftBarButtonItem" title="Back" id="kHG-av-ngR" userLabel="Back">
+                                            <connections>
+                                                <action selector="goBack:" destination="LmZ-KJ-ajI" id="tGc-2K-EnU"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="IfK-f2-9Qj">
+                                <rect key="frame" x="0.0" y="44" width="600" height="158"/>
+                            </mapView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="IfK-f2-9Qj" secondAttribute="trailing" constant="-20" id="79Z-OQ-C9G"/>
+                            <constraint firstItem="136-c0-Hdi" firstAttribute="leading" secondItem="rDP-Uw-djt" secondAttribute="leadingMargin" constant="-20" id="7wF-99-oQ0"/>
+                            <constraint firstItem="IfK-f2-9Qj" firstAttribute="leading" secondItem="rDP-Uw-djt" secondAttribute="leadingMargin" constant="-20" id="M7D-ZG-dTo"/>
+                            <constraint firstItem="136-c0-Hdi" firstAttribute="top" secondItem="IfK-f2-9Qj" secondAttribute="bottom" id="PR9-nU-Rpf"/>
+                            <constraint firstItem="UfJ-4J-7xK" firstAttribute="centerX" secondItem="136-c0-Hdi" secondAttribute="centerX" id="PcT-De-QMS"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="136-c0-Hdi" secondAttribute="trailing" constant="-20" id="Tpi-Zb-2OZ"/>
+                            <constraint firstItem="X1f-N1-zNp" firstAttribute="top" secondItem="136-c0-Hdi" secondAttribute="bottom" id="WFl-iz-kFI"/>
+                            <constraint firstItem="136-c0-Hdi" firstAttribute="top" secondItem="IfK-f2-9Qj" secondAttribute="bottom" constant="8" id="cIH-Jo-0AE"/>
+                            <constraint firstItem="X1f-N1-zNp" firstAttribute="top" secondItem="UfJ-4J-7xK" secondAttribute="bottom" constant="20" id="m51-JH-Pjv"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="HTd-pl-Q4H"/>
+                    <connections>
+                        <outlet property="collectionView" destination="136-c0-Hdi" id="4Zy-Z3-rIx"/>
+                        <outlet property="mapView" destination="IfK-f2-9Qj" id="31h-9m-89Y"/>
+                        <outlet property="newCollectionButton" destination="UfJ-4J-7xK" id="gKL-f9-Xje"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EhF-Nc-Htf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
