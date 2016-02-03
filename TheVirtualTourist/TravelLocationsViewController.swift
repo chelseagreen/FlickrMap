@@ -5,7 +5,6 @@
 //  Created by Chelsea Green on 2/2/16.
 //  Copyright © 2016 Chelsea Green. All rights reserved.
 //
-
 import UIKit
 import CoreData
 import MapKit
@@ -25,8 +24,9 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         let longPress = UILongPressGestureRecognizer(target: self, action: "dropPin:")
         longPress.minimumPressDuration = 0.5
         mapView.addGestureRecognizer(longPress)
-        
         mapView.delegate = self
+        
+        restoreLastMapRegion()
         
         mapView.addAnnotations(fetchAllPins())
     }
@@ -47,16 +47,17 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    //MARK: Remove Pin
+    //MARK: Show Pin Photos
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         //cast pin
         let pin = view.annotation as! Pin
-        //delete from our context
-        sharedContext.deleteObject(pin)
-        //remove the annotation from the map
-        mapView.removeAnnotation(pin)
-        //save our context
-        appDelegate.saveContext()
+            //delete from our context
+            //sharedContext.deleteObject(pin)
+            //remove the annotation from the map
+            //mapView.removeAnnotation(pin)
+            //save our context
+            //appDelegate.saveContext()
+        performSegueWithIdentifier("showAlbum", sender: nil)
     }
     
     //MARK: Fetch saved Pins
@@ -82,78 +83,43 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     }
     
     
+    //MARK: Save map region
+    struct Keys {
+        static let region = "region"
+    }
     
+    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        saveMapRegion()
+    }
     
-    //MARK: - MKMapViewDelegate methods
-    
-    func mapView(mapView: MKMapView!, didSelectAnnotationView view: MKAnnotationView!) {
-    
-        
-        let fetched = self.fetchedResultController.fetchedObjects as! [Pin]
-        for pin in fetched {
-            if pin.coordinate.latitude == view.annotation.coordinate.latitude && pin.coordinate.longitude == view.annotation.coordinate.longitude {
-                
-                
-                // Once the corresponding pin is found, show the photoalbum and pass the data (pin)
-                let controller = storyboard?.instantiateViewControllerWithIdentifier("PhotoAlbumViewController") as! PhotoAlbumViewController
-                
-                // Pass the corresponding pin to the controller
-                controller.pin = pin
-                
-                // Check if a photo album already exist for this pin
-                if !pin.photos.isEmpty {
-                    
-                    // If it does, segue to the album controller
-                    self.navigationController?.pushViewController(controller, animated: true)
-                }
-                    
-                    // Otherwise, get the images paths from flickr, using the pin coordinates
-                else {
-                    
-                    FlickrClient.sharedInstance().getImagesFromFlickrBySearch(searchLongitude: pin.coordinate.longitude, searchLatitude: pin.coordinate.latitude) { photos, error in
-                        
-                        if let error = error {
-                            //Handle error
-                            
-                        } else {
-                            
-                            // Check if images were found for the given location.
-                            if photos?.count == 0 {
-                                
-                                dispatch_async(dispatch_get_main_queue()) {
-                                    self.activityIndicator.stopAnimating()
-                                    self.displayLabelNoPhotoFound()
-                                }
-                                
-                            } else {
-                                
-                                // map the array of dictionary to photo objects
-                                var photo = photos?.map() { (dictionary: [String:AnyObject]) -> Photo in
-                                    let photo = Photo(dictionary: dictionary, context: self.sharedContext)
-                                    
-                                    photo.pin = pin
-                                    
-                                    return photo
-                                }
-                                
-                                // Save the context
-                                CoreDataStackManager.sharedInstance().saveContext()
-                                
-                                // Segue to the PhotoAlbum
-                                
-                                dispatch_async(dispatch_get_main_queue()) {
-                                    self.navigationController?.pushViewController(controller, animated: true)
-                                }
-                            }
-                        }
-                    }
-                }
-                // Deselect the annotation
-                mapView.deselectAnnotation(pin, animated: true)
-            }
+    func restoreLastMapRegion() {
+        if let regionDictionary = NSUserDefaults.standardUserDefaults().dictionaryForKey(Keys.region) {
+            
+            let region = MKCoordinateRegionMake(
+                CLLocationCoordinate2DMake(
+                    regionDictionary["latitude"] as! Double,
+                    regionDictionary["longitude"] as! Double
+                ),
+                MKCoordinateSpanMake(
+                    regionDictionary["spanLatitude"] as! Double,
+                    regionDictionary["spanLongitude"]as! Double
+                )
+            )
+            mapView.setRegion(region, animated: true)
         }
     }
     
+    func saveMapRegion() {
+        let region = mapView.region
+        let regionDictionary = [
+            "latitude": region.center.latitude,
+            "longitude": region.center.longitude,
+            "spanLatitude":   region.span.latitudeDelta,
+            "spanLongitude":   region.span.longitudeDelta
+        ]
+        
+        NSUserDefaults.standardUserDefaults().setObject(regionDictionary, forKey: Keys.region)
+    }
     
-    
+  
 }

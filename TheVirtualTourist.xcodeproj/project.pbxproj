@@ -19,6 +19,7 @@
 		692E84541C619AC500AD2FE4 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 692E84531C619AC500AD2FE4 /* MapKit.framework */; };
 		692E84591C61AEDA00AD2FE4 /* Photo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692E84571C61AEDA00AD2FE4 /* Photo+CoreDataProperties.swift */; };
 		692E845A1C61AEDA00AD2FE4 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692E84581C61AEDA00AD2FE4 /* Photo.swift */; };
+		692E845C1C61C01D00AD2FE4 /* PhotoAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692E845B1C61C01D00AD2FE4 /* PhotoAlbumViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		692E84531C619AC500AD2FE4 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		692E84571C61AEDA00AD2FE4 /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		692E84581C61AEDA00AD2FE4 /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		692E845B1C61C01D00AD2FE4 /* PhotoAlbumViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoAlbumViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 			children = (
 				692E841E1C61967500AD2FE4 /* AppDelegate.swift */,
 				692E84201C61967500AD2FE4 /* TravelLocationsViewController.swift */,
+				692E845B1C61C01D00AD2FE4 /* PhotoAlbumViewController.swift */,
 				692E84221C61967500AD2FE4 /* Main.storyboard */,
 				692E84281C61967500AD2FE4 /* Assets.xcassets */,
 				692E842D1C61967500AD2FE4 /* Info.plist */,
@@ -279,6 +282,7 @@
 				692E845A1C61AEDA00AD2FE4 /* Photo.swift in Sources */,
 				692E84591C61AEDA00AD2FE4 /* Photo+CoreDataProperties.swift in Sources */,
 				692E84521C61979700AD2FE4 /* Pin.swift in Sources */,
+				692E845C1C61C01D00AD2FE4 /* PhotoAlbumViewController.swift in Sources */,
 				692E84271C61967500AD2FE4 /* TheVirtualTourist.xcdatamodeld in Sources */,
 				692E84511C61979700AD2FE4 /* Pin+CoreDataProperties.swift in Sources */,
 				692E84211C61967500AD2FE4 /* TravelLocationsViewController.swift in Sources */,
