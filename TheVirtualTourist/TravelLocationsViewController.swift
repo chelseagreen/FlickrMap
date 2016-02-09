@@ -12,17 +12,12 @@ import MapKit
 class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
-    var appDelegate: AppDelegate!
-    var sharedContext: NSManagedObjectContext!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        sharedContext = appDelegate.managedObjectContext
     
         let longPress = UILongPressGestureRecognizer(target: self, action: "dropPin:")
-        longPress.minimumPressDuration = 0.5
+        longPress.minimumPressDuration = 0.6
         mapView.addGestureRecognizer(longPress)
         mapView.delegate = self
         
@@ -39,11 +34,11 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         
         if UIGestureRecognizerState.Began == gestureRecognizer.state {
             //initialize our Pin with our coordinates and the context from AppDelegate
-            let pin = Pin(annotationLatitude: touchMapCoordinate.latitude, annotationLongitude: touchMapCoordinate.longitude, context: appDelegate.managedObjectContext)
+            let pin = Pin(annotationLatitude: touchMapCoordinate.latitude, annotationLongitude: touchMapCoordinate.longitude, context: CoreDataStackManager.sharedInstance().managedObjectContext)
             //add the pin to the map
             mapView.addAnnotation(pin)
             //save our context. We can do this at any point but it seems like a good idea to do it here.
-            appDelegate.saveContext()
+            CoreDataStackManager.sharedInstance().saveContext()
         }
     }
     
@@ -51,15 +46,16 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         //cast pin
         let pin = view.annotation as! Pin
-            //delete from our context
-            //sharedContext.deleteObject(pin)
-            //remove the annotation from the map
-            //mapView.removeAnnotation(pin)
-            //save our context
-            //appDelegate.saveContext()
-        performSegueWithIdentifier("showAlbum", sender: nil)
+        performSegueWithIdentifier("showAlbum", sender: view.annotation)
     }
     
+    // MARK: Segue to Album
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        var vc = segue.destinationViewController.childViewControllers[0] as! PhotoAlbumViewController
+        vc.pin = sender as! Pin
+    }
+
     //MARK: Fetch saved Pins
     func fetchAllPins() -> [Pin] {
         
@@ -81,7 +77,6 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         // Return the results, cast to an array of Pin objects
         return results as! [Pin]
     }
-    
     
     //MARK: Save map region
     struct Keys {
@@ -121,5 +116,8 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         NSUserDefaults.standardUserDefaults().setObject(regionDictionary, forKey: Keys.region)
     }
     
-  
+    // MARK: Core Data convenience method
+    var sharedContext: NSManagedObjectContext {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
+    }
 }
