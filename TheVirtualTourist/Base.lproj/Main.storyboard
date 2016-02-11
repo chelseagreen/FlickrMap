@@ -6,10 +6,10 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Photo Album View Controller-->
+        <!--PhotoAlbumViewController-->
         <scene sceneID="wf5-IV-Bmd">
             <objects>
-                <viewController id="LmZ-KJ-ajI" customClass="PhotoAlbumViewController" customModule="TheVirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PhotoAlbumViewController" title="PhotoAlbumViewController" id="LmZ-KJ-ajI" customClass="PhotoAlbumViewController" customModule="TheVirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="A8e-8S-xLU"/>
                         <viewControllerLayoutGuide type="bottom" id="X1f-N1-zNp"/>
@@ -91,7 +91,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EhF-Nc-Htf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="243" y="-150"/>
+            <point key="canvasLocation" x="219" y="426"/>
         </scene>
         <!--Travel Locations View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -117,6 +117,7 @@
                             <constraint firstItem="kQZ-cu-mHA" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="qkC-9Q-kMA"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="7NY-JF-Jh5"/>
                     <connections>
                         <outlet property="mapView" destination="kQZ-cu-mHA" id="A6x-fK-CHh"/>
                         <segue destination="LmZ-KJ-ajI" kind="presentation" identifier="showAlbum" modalPresentationStyle="currentContext" id="XoG-kB-v9s"/>
@@ -124,7 +125,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="243" y="562"/>
+            <point key="canvasLocation" x="-877" y="426"/>
         </scene>
     </scenes>
 </document>

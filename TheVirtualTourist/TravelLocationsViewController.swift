@@ -13,9 +13,14 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
     
+    var droppedPin : Pin!
+    var pins = [Pin]()
+    var annotationsLocations = [Int:Pin]()
+    var annotation = MKPointAnnotation()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        
         let longPress = UILongPressGestureRecognizer(target: self, action: "dropPin:")
         longPress.minimumPressDuration = 0.6
         mapView.addGestureRecognizer(longPress)
@@ -23,59 +28,85 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         
         restoreLastMapRegion()
         
-        mapView.addAnnotations(fetchAllPins())
-    }
-    
-    //MARK: New Pin
-    func dropPin(gestureRecognizer: UIGestureRecognizer) {
-        
-        let tapPoint: CGPoint = gestureRecognizer.locationInView(mapView)
-        let touchMapCoordinate: CLLocationCoordinate2D = mapView.convertPoint(tapPoint, toCoordinateFromView: mapView)
-        
-        if UIGestureRecognizerState.Began == gestureRecognizer.state {
-            //initialize our Pin with our coordinates and the context from AppDelegate
-            let pin = Pin(annotationLatitude: touchMapCoordinate.latitude, annotationLongitude: touchMapCoordinate.longitude, context: CoreDataStackManager.sharedInstance().managedObjectContext)
-            //add the pin to the map
-            mapView.addAnnotation(pin)
-            //save our context. We can do this at any point but it seems like a good idea to do it here.
-            CoreDataStackManager.sharedInstance().saveContext()
+        let pins = fetchAllPins()
+  
+        for p in pins{
+                let annotation = MKPointAnnotation()
+                let tapPoint = CLLocationCoordinate2D(latitude: Double(p.latitude), longitude: Double(p.longitude)) //We need to cast to double because the parameters were NSNumber
+                annotation.coordinate = tapPoint
+                annotationsLocations[annotation.hash] = p //Setting the dictionary that will enable us to segway to photo album
+                self.mapView.addAnnotation(annotation)
         }
     }
     
+    //MARK: Drop a new Pin
+    func dropPin(sender: UIGestureRecognizer) {
+        if sender.state == .Began {
+            let annotation = MKPointAnnotation()
+            let touchPoint:CGPoint = sender.locationInView(mapView)
+            let touchCoord:CLLocationCoordinate2D = mapView.convertPoint(touchPoint, toCoordinateFromView: self.mapView)
+            
+            annotation.coordinate = touchCoord
+            self.mapView.addAnnotation(annotation)
+            self.annotation = annotation
+            
+        }
+        else if sender.state == .Changed {
+            let annotation = MKPointAnnotation()
+            let touchPoint:CGPoint = sender.locationInView(self.mapView)
+            let touchCoord:CLLocationCoordinate2D = mapView.convertPoint(touchPoint, toCoordinateFromView: self.mapView)
+            annotation.coordinate = touchCoord
+            self.mapView.addAnnotation(annotation)
+            self.annotation = annotation
+        }
+        else if sender.state == .Ended {
+            droppedPin = Pin(dictionary: ["latitude":self.annotation.coordinate.latitude,"longitude":self.annotation.coordinate.longitude], context: sharedContext)
+                // download photos as soon as pin is dropped
+                downloadPhotos(droppedPin)
+            }
+    }
+
+    // Mark: Download photos from flickr to store in cache
+    func downloadPhotos(pin: Pin) {
+        FlickrClient.sharedInstance().getPhotos(droppedPin.latitude, longitude: droppedPin.longitude) {
+            (result, error) in
+            if (error != nil) {
+                self.showError("download photos error: \(error)")
+            }
+            else {
+                dispatch_async(dispatch_get_main_queue()) {
+                    let photos = Photo.photosFromResult(result, context: self.sharedContext)
+                    photos.pin = self.droppedPin
+                    CoreDataStackManager.sharedInstance().saveContext()
+                    }
+                }
+            }
+        }
+    
+    
     //MARK: Show Pin Photos
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        //cast pin
-        let pin = view.annotation as! Pin
-        performSegueWithIdentifier("showAlbum", sender: view.annotation)
-    }
-    
-    // MARK: Segue to Album
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        var vc = segue.destinationViewController.childViewControllers[0] as! PhotoAlbumViewController
-        vc.pin = sender as! Pin
+        let controller = storyboard!.instantiateViewControllerWithIdentifier("PhotoAlbumViewController") as! PhotoAlbumViewController
+        
+        if let l = annotationsLocations[view.annotation!.hash]{
+            controller.pin = l
+            droppedPin = l
+            
+            presentViewController(controller, animated: true, completion: nil)
+            mapView.deselectAnnotation(view.annotation, animated: true)
+            CoreDataStackManager.sharedInstance().saveContext()
+        }
     }
 
     //MARK: Fetch saved Pins
     func fetchAllPins() -> [Pin] {
-        
-        let error: NSErrorPointer = nil
-        // Create the Fetch Request
         let fetchRequest = NSFetchRequest(entityName: "Pin")
-        // Execute the Fetch Request
-        let results: [AnyObject]?
         do {
-            results = try sharedContext.executeFetchRequest(fetchRequest)
-        } catch let error1 as NSError {
-            error.memory = error1
-            results = nil
+            return try sharedContext.executeFetchRequest(fetchRequest) as! [Pin]
+        } catch let error as NSError {
+            showError("Error in fetching pins")
+            return [Pin]()
         }
-        // Check for Errors
-        if error != nil {
-            print("Error in fectchAllActors(): \(error)")
-        }
-        // Return the results, cast to an array of Pin objects
-        return results as! [Pin]
     }
     
     //MARK: Save map region
@@ -120,4 +151,14 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     var sharedContext: NSManagedObjectContext {
         return CoreDataStackManager.sharedInstance().managedObjectContext
     }
+    
+    // Show an error message with alert
+    func showError(error: String) {
+        dispatch_async(dispatch_get_main_queue()) {
+            let alert = UIAlertController(title: "", message: error, preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+    }
+
 }
