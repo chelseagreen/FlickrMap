@@ -1,5 +1,5 @@
 //
-//  CollectionViewCell.swift
+//  PhotoCell.swift
 //  TheVirtualTourist
 //
 //  Created by Chelsea Green on 2/2/16.
@@ -8,7 +8,9 @@
 
 import UIKit
 
-class CollectionViewCell: UICollectionViewCell {
+class PhotoCell: UICollectionViewCell {
+ 
     @IBOutlet weak var imageView: UIImageView!
-    
+   
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 }

@@ -5,9 +5,9 @@
 //  Created by Chelsea Green on 2/8/16.
 //  Copyright © 2016 Chelsea Green. All rights reserved.
 //
-
 import UIKit
 
+// manage caching for photo images
 class ImageCache {
     
     private var inMemoryCache = NSCache()
