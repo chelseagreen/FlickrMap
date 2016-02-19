@@ -12,6 +12,7 @@ import CoreData
 
 class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, NSFetchedResultsControllerDelegate {
     
+    @IBOutlet weak var photoFetchingActivity: UIActivityIndicatorView!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var newCollectionButton: UIBarButtonItem!
@@ -130,15 +131,18 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     }
     
     func loadPhoto() {
+        photoFetchingActivity.startAnimating()
         noPhotoLabel.hidden = true
         newCollectionButton.enabled = false
         FlickrClient.sharedInstance().getPhotos(pin!.latitude, longitude: pin!.longitude) {
             (result, error) in
             if (error != nil) {
+                self.photoFetchingActivity.stopAnimating()
                 self.showError("error downloading photos: \(error)")
             }
             else {
                 dispatch_async(dispatch_get_main_queue()) {
+                    self.photoFetchingActivity.stopAnimating()
                     let photos = Photo.photosFromResult(result, context: self.sharedContext)
                     for photo in photos {
                         photo.pin = self.pin

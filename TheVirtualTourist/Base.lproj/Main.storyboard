@@ -83,6 +83,10 @@
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
+                                <activityIndicatorView key="backgroundView" hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" id="Oww-Q5-TxO">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="367"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                </activityIndicatorView>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" reuseIdentifier="PhotoCell" id="AOO-hc-DZG" customClass="PhotoCell" customModule="TheVirtualTourist" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
@@ -94,7 +98,7 @@
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="gYZ-7f-Iw3">
                                                     <rect key="frame" x="0.0" y="0.0" width="200" height="192"/>
                                                 </imageView>
-                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="IbD-5l-8Nf">
+                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="IbD-5l-8Nf">
                                                     <rect key="frame" x="90" y="90" width="20" height="20"/>
                                                 </activityIndicatorView>
                                             </subviews>
@@ -173,6 +177,7 @@
                         <outlet property="mapView" destination="tkw-q1-uUD" id="fz1-uC-UKE"/>
                         <outlet property="newCollectionButton" destination="8VW-60-0mt" id="eqk-97-sz6"/>
                         <outlet property="noPhotoLabel" destination="PEg-or-ZWi" id="C7Q-xD-kcb"/>
+                        <outlet property="photoFetchingActivity" destination="Oww-Q5-TxO" id="oFB-Bh-pb8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LQx-qW-XbL" userLabel="First Responder" sceneMemberID="firstResponder"/>
