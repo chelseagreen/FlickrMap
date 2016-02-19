@@ -89,16 +89,18 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
             cell.imageView.image = photo.photoImage
         }
         else {
+            dispatch_async(dispatch_get_main_queue()) {
             cell.activityIndicator.startAnimating()
             cell.imageView.hidden = true
             FlickrClient.sharedInstance().getImage(photo.imageUrl) {
                 (imageData, error) in
                 if let downloadError = error {
+                    cell.activityIndicator.stopAnimating()
                     print("download image error: \(downloadError)")
                 }
                 else {
                     if let image = UIImage(data: imageData!) {
-                        dispatch_async(dispatch_get_main_queue()) {
+                        
                             cell.imageView.hidden = false
                             cell.imageView.image = image
                             cell.activityIndicator.stopAnimating()
@@ -128,6 +130,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
             deleteAllPhotos()
             loadPhoto()
         }
+        updateCollectionButton()
     }
     
     func loadPhoto() {

@@ -17,6 +17,10 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     var cancelDownload = false
     
+    struct Keys {
+        static let region = "region"
+    }
+    
     override func viewDidLoad() {
         mapView.delegate = self
         
@@ -118,12 +122,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
             }
         }
     }
-    
-    //Save and restore map zoom and region
-    struct Keys {
-        static let region = "region"
-    }
-    
+
     func restoreLastMapRegion() {
         if let regionDictionary = NSUserDefaults.standardUserDefaults().dictionaryForKey(Keys.region) {
             
