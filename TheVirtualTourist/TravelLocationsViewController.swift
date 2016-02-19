@@ -21,7 +21,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         mapView.delegate = self
         
         let recognizer = UILongPressGestureRecognizer(target: self, action: "dropPin:")
-        recognizer.minimumPressDuration = 1
+        recognizer.minimumPressDuration = 1.0
         mapView.addGestureRecognizer(recognizer)
         
         let pins = fetchAllPins()
