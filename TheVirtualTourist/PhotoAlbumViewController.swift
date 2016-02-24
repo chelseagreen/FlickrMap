@@ -89,7 +89,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
             cell.imageView.image = photo.photoImage
         }
         else {
-            dispatch_async(dispatch_get_main_queue()) {
             cell.activityIndicator.startAnimating()
             cell.imageView.hidden = true
             FlickrClient.sharedInstance().getImage(photo.imageUrl) {
@@ -98,16 +97,17 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
                     cell.activityIndicator.stopAnimating()
                     print("download image error: \(downloadError)")
                 }
-                else {
+                else { 
                     if let image = UIImage(data: imageData!) {
+                        dispatch_async(dispatch_get_main_queue()) {
                         
                             cell.imageView.hidden = false
                             cell.imageView.image = image
                             cell.activityIndicator.stopAnimating()
-                            
-                            // set the photoImage so it will be cached
-                            photo.photoImage = image
                         }
+                        
+                        // set the photoImage so it will be cached
+                        photo.photoImage = image
                     }
                 }
             }

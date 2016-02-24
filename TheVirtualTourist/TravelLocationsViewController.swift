@@ -17,6 +17,8 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     var cancelDownload = false
     
+    var sharedContext = CoreDataStackManager.sharedInstance().managedObjectContext
+    
     struct Keys {
         static let region = "region"
     }
@@ -105,21 +107,23 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     func downloadPhotos(pin: Pin) {
         FlickrClient.sharedInstance().getPhotos(pin.latitude, longitude: pin.longitude) {
             (result, error) in
-            if (error != nil) {
-                self.showError("download photos error: \(error)")
-            }
-            else {
-                dispatch_async(dispatch_get_main_queue()) {
-                    if (!self.cancelDownload) {
-                        let photos = Photo.photosFromResult(result, context: CoreDataStackManager.sharedInstance().managedObjectContext)
-                        for photo in photos {
-                            photo.pin = pin
-                        }
-                        CoreDataStackManager.sharedInstance().saveContext()
-                    }
+            self.sharedContext.performBlock({ () -> Void in
+                if (error != nil) {
+                    self.showError("download photos error: \(error)")
                 }
-                
-            }
+                else {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        if (!self.cancelDownload) {
+                            let photos = Photo.photosFromResult(result, context: CoreDataStackManager.sharedInstance().managedObjectContext)
+                            for photo in photos {
+                                photo.pin = pin
+                            }
+                            CoreDataStackManager.sharedInstance().saveContext()
+                        }
+                    }
+                    
+                }
+            })
         }
     }
 
