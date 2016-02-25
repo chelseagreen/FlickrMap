@@ -12,11 +12,8 @@ import CoreData
 class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
-    
     var droppedPin : PinAnnotation?
-    
     var cancelDownload = false
-    
     var sharedContext = CoreDataStackManager.sharedInstance().managedObjectContext
     
     struct Keys {
