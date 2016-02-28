@@ -38,7 +38,9 @@ class Photo : NSManagedObject {
             return FlickrClient.Caches.imageCache.imageWithPath(file)
         }
         set {
-            FlickrClient.Caches.imageCache.storeImage(newValue, withPath: file)
+            dispatch_async(dispatch_get_main_queue()) {
+            FlickrClient.Caches.imageCache.storeImage(newValue, withPath: self.file)
+            }
         }
     }
     
