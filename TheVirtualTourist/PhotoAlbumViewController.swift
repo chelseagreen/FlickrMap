@@ -51,7 +51,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     
     override func viewWillAppear(animated: Bool) {
         if (pin.photos.isEmpty) {
-            loadPhoto()
+            newPhotoCollection()
         }
     }
     
@@ -127,16 +127,21 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
             deleteSelectedItems()
         }
         else {
-            deleteAllPhotos()
-            loadPhoto()
+            newPhotoCollection()
         }
         updateCollectionButton()
     }
     
-    func loadPhoto() {
+    func newPhotoCollection() {
         photoFetchingActivity.startAnimating()
         noPhotoLabel.hidden = true
         newCollectionButton.enabled = false
+        
+        // delete all photos in view
+        for photo in fetchedResultsController.fetchedObjects as! [Photo] {
+            sharedContext.deleteObject(photo)
+        }
+        CoreDataStackManager.sharedInstance().saveContext()
         
         FlickrClient.sharedInstance().getPhotos(pin.latitude, longitude: pin.longitude) {
             (result, error) in
@@ -174,8 +179,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         }
     }
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let sectionInfo = fetchedResultsController.sections![section]
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection photos: Int) -> Int {
+        let sectionInfo = fetchedResultsController.sections![photos]
         return sectionInfo.numberOfObjects
     }
     
@@ -275,14 +280,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         CoreDataStackManager.sharedInstance().saveContext()
         
         selectedIndexes = [NSIndexPath]()
-    }
-    
-    // delete all photos
-    func deleteAllPhotos() {
-        for photo in fetchedResultsController.fetchedObjects as! [Photo] {
-            sharedContext.deleteObject(photo)
-        }
-        CoreDataStackManager.sharedInstance().saveContext()
     }
     
     // Show an error message with alert
