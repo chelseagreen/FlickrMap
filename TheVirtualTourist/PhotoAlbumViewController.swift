@@ -188,7 +188,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCell
         
         configureCell(cell, atIndexPath: indexPath)
-        
         return cell
     }
     
@@ -248,22 +247,20 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDataSource, UI
     // into the three index path arrays (insert, delete, and upate). We now need to loop through the
     // arrays and perform the changes.
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        dispatch_async(dispatch_get_main_queue()) {
-            self.collectionView.performBatchUpdates(
-                {
-                    () -> Void in
-                    for indexPath in self.insertedIndexPaths {
-                        self.collectionView.insertItemsAtIndexPaths([indexPath])
-                    }
-                    for indexPath in self.deletedIndexPaths {
-                        self.collectionView.deleteItemsAtIndexPaths([indexPath])
-                    }
-                    for indexPath in self.updatedIndexPaths {
-                        self.collectionView.reloadItemsAtIndexPaths([indexPath])
-                    }
+        self.collectionView.performBatchUpdates(
+            {
+                () -> Void in
+                for indexPath in self.insertedIndexPaths {
+                    self.collectionView.insertItemsAtIndexPaths([indexPath])
                 }
-                ,completion: nil)
-        }
+                for indexPath in self.deletedIndexPaths {
+                    self.collectionView.deleteItemsAtIndexPaths([indexPath])
+                }
+                for indexPath in self.updatedIndexPaths {
+                    self.collectionView.reloadItemsAtIndexPaths([indexPath])
+                }
+            }
+            ,completion: nil)
     }
     
     // delete selected photos in collection view

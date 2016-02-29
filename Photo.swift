@@ -35,7 +35,7 @@ class Photo : NSManagedObject {
     
     var photoImage: UIImage? {
         get {
-            return FlickrClient.Caches.imageCache.imageWithPath(file)
+            return FlickrClient.Caches.imageCache.imageWithPath(id)
         }
         set {
             dispatch_async(dispatch_get_main_queue()) {
